@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Linq.Expressions;
 
 namespace RefactorKata
 {
@@ -19,35 +20,26 @@ namespace RefactorKata
 
         private static IOrderedEnumerable<Product> GetProducts()
         {
-            
-        }
-        var Conn = new System.Data.SqlClient.SqlConnection("Server=.;Database=myDataBase;User Id=myUsername;Password = myPassword;");
-
-            System.Data.SqlClient.SqlCommand cmd = Conn.CreateCommand();
-            cmd.CommandText = "select * from Products";
-            /*
-             * cmd.CommandText = "Select * from Invoices";
-             */
-            System.Data.SqlClient.SqlDataReader reader = cmd.ExecuteReader();
-            List<Product> products = new List<Product>();
-
-            //TODO: Replace with Dapper
-            while (reader.Read())
+            using (var conn =
+                new SqlConnection("Server=.;Database=myDataBase;User Id=myUsername;Password = myPassword;"))
             {
-                var prod = new Product();
-                prod.name = reader["Name"].ToString();
-                products.Add(prod);
-            }
-            Conn.Dispose();
-            Console.WriteLine("Products Loaded!");
-            for (int i =0; i< products.Count; i++)
-            {
-                Console.WriteLine(products[i].name);
+                var cmd = conn.CreateCommand();
+                cmd.CommandText = "select * from Products";
+
+                var reader = cmd.ExecuteReader();
+                var products = new List<Product>();
+
+                while (reader.Read())
+                {
+                    var prod = new Product {Name = reader["Name"].ToString()};
+                    products.Add(prod);
+                }
+
+                Console.WriteLine("Products Loaded!");
+                return products;
+
             }
         }
     }
-    public class Product
-    {
-        public string Name { get { return name; } set { name = value; } }
-    }
-}
+        
+        
