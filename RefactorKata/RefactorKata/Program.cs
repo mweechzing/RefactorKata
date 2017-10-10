@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Linq;
 
 namespace RefactorKata
 {
@@ -8,13 +9,19 @@ namespace RefactorKata
     {
         private static void Main(string[] args)
         {
-           var products = GetProducts();
+            var products = GetProducts();
 
-            foreach (var products in products )
+            foreach (var products in products)
             {
                 Console.WriteLine("This product is called: " + Product.Name);
-            } 
-           var Conn = new System.Data.SqlClient.SqlConnection("Server=.;Database=myDataBase;User Id=myUsername;Password = myPassword;");
+            }
+        }
+
+        private static IOrderedEnumerable<Product> GetProducts()
+        {
+            
+        }
+        var Conn = new System.Data.SqlClient.SqlConnection("Server=.;Database=myDataBase;User Id=myUsername;Password = myPassword;");
 
             System.Data.SqlClient.SqlCommand cmd = Conn.CreateCommand();
             cmd.CommandText = "select * from Products";
